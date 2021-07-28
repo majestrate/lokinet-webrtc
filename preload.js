@@ -26,6 +26,10 @@ const handleMsg = async (msg) => {
   {
     await handleNewICECandidateMsg(msg);
   }
+  if(msg.type === "hang-up")
+  {
+    await closeVideoCall();
+  }
 }
 setTimeout(async () => {
   localaddr = await lokinet.localaddr();
@@ -59,7 +63,7 @@ const sendToRemote = (msg) => {
 
 var myPeerConnection;
 
-const closeVideoCall = () => {
+const closeVideoCall = async () => {
   var remoteVideo = document.getElementById("received_video");
   var localVideo = document.getElementById("local_video");
 
@@ -91,10 +95,12 @@ const closeVideoCall = () => {
   remoteVideo.removeAttribute("srcObject");
 
   document.getElementById("hangup-button").disabled = true;
+  wsc.close();
+  wsc = null;
 }
 
 const hangUpCall = async () => {
-  closeVideoCall();
+  await closeVideoCall();
   sendToRemote({
     type: "hang-up"
   });
@@ -230,4 +236,6 @@ window.addEventListener('DOMContentLoaded', () => {
       localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
     });
   });
+  const hangup = document.getElementById("hangup-button");
+  hangup.on("click", hangUpCall);
 })
