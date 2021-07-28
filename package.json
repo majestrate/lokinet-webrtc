@@ -4,7 +4,7 @@
   "description": "lokinet webrtc shim jizz",
   "main": "index.js",
   "scripts": {
-    "start": "electron ."
+    "demo": "electron ."
   },
   "author": "jeff",
   "license": "GPL-3.0",
