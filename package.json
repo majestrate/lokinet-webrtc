@@ -7,5 +7,8 @@
     "test": "node ./test.js"
   },
   "author": "jeff",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "dependencies": {
+    "electron": "^13.1.7"
+  }
 }
