@@ -30,6 +30,8 @@ const handleMsg = async (msg) => {
 setTimeout(async () => {
   localaddr = await lokinet.localaddr();
   localip = await lokinet.localip();
+  const elem = document.getElementById("local_addr");
+  elem.value = localaddr;
   log("got localaddr " + localaddr);
   log("got localip "+ localip);
 }, 1);
