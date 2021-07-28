@@ -3,4 +3,4 @@
 running:
 
      $ npm install
-     $ npm demo
+     $ npm run demo
