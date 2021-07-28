@@ -1,0 +1,11 @@
+{
+  "name": "lokinet-webrtc",
+  "version": "0.0.1",
+  "description": "lokinet webrtc shim jizz",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./test.js"
+  },
+  "author": "jeff",
+  "license": "GPL-3.0"
+}
