@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>lokinet webrtc demo</title>
+  </head>
+  <body>
+    <label for="local_addr">local address</label>
+    <input disabled=true id="local_addr" />
+    <label for="remote_addr_input">remote address:</label>
+    <input id="remote_addr_input"/>
+    <input type="button" id="establish_button" value="try connecting" />
+    <div class="flexChild" id="camera-container">
+      <div class="camera-box">
+        <video id="received_video" autoplay></video>
+        <video id="local_video" autoplay muted></video>
+        <button id="hangup-button" onclick="hangUpCall();" disabled>
+          Hang Up
+        </button>
+      </div>
+    </div>
+    <pre id="log"></pre>
+  </body>
+</html>
