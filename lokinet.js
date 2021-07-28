@@ -6,7 +6,7 @@ const dns = require('dns').promises;
 const resolver = new dns.Resolver();
 /// set resolver to use lokinet resolver
 /// on windows/mac it's 127.0.0.1 on linux it's 127.3.2.1
-resolver.setServers(['127.3.2.1']);
+resolver.setServers(['127.3.2.1', '127.0.0.1']);
 
 
 
