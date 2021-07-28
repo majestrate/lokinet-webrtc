@@ -237,5 +237,5 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
   const hangup = document.getElementById("hangup-button");
-  hangup.on("click", hangUpCall);
+  hangup.addEventListener("click", hangUpCall);
 })
