@@ -13,3 +13,7 @@ html {
 .flexChild {
     flex: 1;
 }
+
+#log {
+    overflow: overlay;
+}
