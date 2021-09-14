@@ -146,19 +146,25 @@ const handleVideoOfferMsg = async (msg) => {
   createPeerConnection();
 
   var desc = new RTCSessionDescription(msg.sdp);
-
-  await myPeerConnection.setRemoteDescription(desc);
-  localStream = await navigator.mediaDevices.getUserMedia(MEDIA_SETTINGS);
-  document.getElementById("local_video").srcObject = localStream;
-
-  await localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
-  
-  const answer = await myPeerConnection.createAnswer();
-  await myPeerConnection.setLocalDescription(answer);
-  sendToRemote({
+  try
+  {
+    await myPeerConnection.setRemoteDescription(desc);
+    localStream = await navigator.mediaDevices.getUserMedia(MEDIA_SETTINGS);
+    document.getElementById("local_video").srcObject = localStream;
+    await localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
+    
+    const answer = await myPeerConnection.createAnswer();
+    await myPeerConnection.setLocalDescription(answer);
+    sendToRemote({
       type: "video-answer",
       sdp: myPeerConnection.localDescription
-  });
+    });
+  }
+  catch(err)
+  {
+    log("error recving call: " +err);
+    document.getElementById("hangup-button").disabled = false;
+  }
 }
 
 const handleNewICECandidateMsg = async (msg) => {
