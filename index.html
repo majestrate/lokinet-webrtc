@@ -5,13 +5,18 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <link rel="stylesheet" href="index.css" />
     <title>lokinet webrtc demo</title>
   </head>
   <body>
-    <label for="local_addr">local address</label>
-    <input disabled=true id="local_addr" />
-    <label for="remote_addr_input">remote address:</label>
-    <input id="remote_addr_input"/>
+    <div class="flexChild">
+      <label for="local_addr">local address</label>
+      <input disabled=true id="local_addr" />
+    </div>
+    <div class="flexChild">
+      <label for="remote_addr_input">remote address:</label>
+      <input id="remote_addr_input"/>
+    </div>
     <input type="button" id="establish_button" value="try connecting" />
     <div class="flexChild" id="camera-container">
       <div class="camera-box">

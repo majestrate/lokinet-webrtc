@@ -1,14 +1,26 @@
 
 const lokinet = require("./lokinet.js")
 
+const DEBUG = true;
+
 const log = (msg) => {
-  const _log = document.getElementById("log");
-  _log.appendChild(document.createTextNode(msg+"\n"));
+  console.log(msg);
+  if(DEBUG)
+  {
+    const _log = document.getElementById("log");
+    _log.appendChild(document.createTextNode(msg+"\n"));
+  }
 }
+
+/// signalling port
+const PORT = 8811;
+
+/// media settings for call
+const MEDIA_SETTINGS = {audio: true, video: true};
 
 const WebSocket = require('ws')
 
-const wss = new WebSocket.Server({ port: 8811 });
+const wss = new WebSocket.Server({ port: PORT });
 var wsc;
 var localip;
 var localaddr;
@@ -31,14 +43,6 @@ const handleMsg = async (msg) => {
     await closeVideoCall();
   }
 }
-setTimeout(async () => {
-  localaddr = await lokinet.localaddr();
-  localip = await lokinet.localip();
-  const elem = document.getElementById("local_addr");
-  elem.value = localaddr;
-  log("got localaddr " + localaddr);
-  log("got localip "+ localip);
-}, 1);
 
 wss.on('connection', async (ws) => {
   wsc = ws;
@@ -144,7 +148,7 @@ const handleVideoOfferMsg = async (msg) => {
   var desc = new RTCSessionDescription(msg.sdp);
 
   await myPeerConnection.setRemoteDescription(desc);
-  localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
+  localStream = await navigator.mediaDevices.getUserMedia(MEDIA_SETTINGS);
   document.getElementById("local_video").srcObject = localStream;
 
   await localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
@@ -204,7 +208,7 @@ const handleICECandidateEvent = async (event) => {
 
 const createPeerConnection = () => {
   myPeerConnection = new RTCPeerConnection({
-      iceServers: [     // Information about ICE servers - Use your own!
+      iceServers: [
       ]
   });
   myPeerConnection.onicecandidate = handleICECandidateEvent;
@@ -222,7 +226,7 @@ window.addEventListener('DOMContentLoaded', () => {
   establish.addEventListener("click", async () => {
     const remoteaddr = remote.value;
     log("connecting to "+remoteaddr);
-    const client = new WebSocket("ws://"+remoteaddr+":8811/");
+    const client = new WebSocket("ws://"+remoteaddr+":"+PORT+"/");
     client.on("open", async () => {
       log("websocket opened");
       wsc = client;
@@ -231,11 +235,21 @@ window.addEventListener('DOMContentLoaded', () => {
         handleMsg(msg);
       });
       createPeerConnection();
-      const localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
+      const localStream = await navigator.mediaDevices.getUserMedia(MEDIA_SETTINGS);
       document.getElementById("local_video").srcObject = localStream;
       localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
     });
   });
   const hangup = document.getElementById("hangup-button");
   hangup.addEventListener("click", hangUpCall);
+  
+  setTimeout(async () => {
+    log("getting lokinet address...");
+    localaddr = await lokinet.localaddr();
+    localip = await lokinet.localip();
+    const elem = document.getElementById("local_addr");
+    elem.value = localaddr;
+    log("got localaddr " + localaddr);
+    log("got localip "+ localip);
+  }, 0);
 })

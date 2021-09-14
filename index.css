@@ -1,0 +1,15 @@
+/** index.css */
+
+html, input {
+    background: #333;
+    color: #7f0;
+}
+html {
+    background-image: url(lokinet.svg);
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    background-size: 75%;
+}
+.flexChild {
+    flex: 1;
+}
