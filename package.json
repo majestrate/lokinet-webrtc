@@ -32,6 +32,7 @@
     "linux": {},
     "files" : [
       "*.html",
+      "*.css",
       "*.js",
       "node_modules/**"
     ]
