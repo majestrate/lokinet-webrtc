@@ -13,7 +13,7 @@ const log = (msg) => {
 
 try
 {
-  const Lokinet = require('liblokinet').Lokinet;
+  const Lokinet = require('./external/liblokinet-ffi/liblokinet.js').Lokinet;
 }
 catch(e)
 {
