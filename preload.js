@@ -238,6 +238,13 @@ const createPeerConnection = () => {
   myPeerConnection.onsignalingstatechange = handleSignalingStateChangeEvent;
 }
 
+const initCall = () => {
+  createPeerConnection();
+  const localStream = await navigator.mediaDevices.getUserMedia(MEDIA_SETTINGS);
+  document.getElementById("local_video").srcObject = localStream;
+  localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
+};
+
 window.addEventListener('DOMContentLoaded', () => {
   const establish = document.getElementById("establish_button");
   establish.disabled = true;
@@ -253,10 +260,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const msg = JSON.parse(message);
         handleMsg(msg);
       });
-      createPeerConnection();
-      const localStream = await navigator.mediaDevices.getUserMedia(MEDIA_SETTINGS);
-      document.getElementById("local_video").srcObject = localStream;
-      localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
+      initCall();
     });
     client.connect("ws://"+remoteaddr+":"+PORT+"/", null, null, null, {agent: lokinet.httpAgent()});
   });
@@ -285,6 +289,7 @@ window.addEventListener('DOMContentLoaded', () => {
         log('WS inbound: ' + message);
         await handleMsg(msg);
       });
+      initCall();
     });
     log("we ready");
     establish.disabled = false;
