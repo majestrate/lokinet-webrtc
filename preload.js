@@ -22,14 +22,14 @@ const PORT = 8811;
 /// media settings for call
 const MEDIA_SETTINGS = {audio: true, video: true};
 
-const WebSocket = require('ws')
-
-const wss = new WebSocket.Server({ port: PORT, host: "127.0.0.1" });
+const WebSocket = require('ws');
+var _lokinet_socket = null;
+var wss;
 var wsc;
 var localip;
 var localaddr;
 
-const handleMsg = async (msg) => {
+const handleMsg = async (msg, inbound) => {
   if(msg.type === "video-offer")
   {
     await handleVideoOfferMsg(msg);
@@ -40,7 +40,7 @@ const handleMsg = async (msg) => {
   }
   if(msg.type === "ice-candidate")
   {
-    await handleNewICECandidateMsg(msg);
+    await handleNewICECandidateMsg(msg, inbound);
   }
   if(msg.type === "hang-up")
   {
@@ -53,7 +53,7 @@ wss.on('connection', async (ws) => {
   wsc.on('message', async (message) => {
     const msg = JSON.parse(message);
     log('WS inbound: ' + message);
-    await handleMsg(msg);
+    await handleMsg(msg, true);
   });
 });
 
@@ -67,7 +67,7 @@ const sendToRemote = (msg) => {
   }
 }
 
-       
+
 
 var myPeerConnection;
 
@@ -105,6 +105,7 @@ const closeVideoCall = async () => {
   document.getElementById("hangup-button").disabled = true;
   wsc.close();
   wsc = null;
+  _lokinet_socket = null;
 }
 
 const hangUpCall = async () => {
@@ -156,7 +157,7 @@ const handleVideoOfferMsg = async (msg) => {
     localStream = await navigator.mediaDevices.getUserMedia(MEDIA_SETTINGS);
     document.getElementById("local_video").srcObject = localStream;
     await localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
-    
+
     const answer = await myPeerConnection.createAnswer();
     await myPeerConnection.setLocalDescription(answer);
     sendToRemote({
@@ -171,12 +172,17 @@ const handleVideoOfferMsg = async (msg) => {
   }
 }
 
-const handleNewICECandidateMsg = async (msg) => {
+const handleNewICECandidateMsg = async (msg, inbound) => {
+  if(inbound)
+  {
+    log("new inbound call");
+  }
   const lokiaddr = msg.candidate.candidate.split(" ")[4];
-  log(lokiaddr);
-  const remoteip = await lokinet.addr_to_ip(lokiaddr);
-  log(remoteip);
-  const candidate = JSON.parse(JSON.stringify(msg.candidate).replace(lokiaddr, remoteip));
+  const lokiport = msg.candidate.candidate.split(" ")[5];
+  const remote = await lokinet.resolveUDP(_lokinet_socket, lokiaddr, lokiport);
+  const remoteip = remote[0];
+  const remoteport = remote[1];
+  const candidate = JSON.parse(JSON.stringify(msg.candidate).replace(lokiaddr, remoteip).replace(` ${lokiport} `, ` ${remoteport} `));
   log("ice candidate:" + JSON.stringify(candidate));
   await myPeerConnection.addIceCandidate(new RTCIceCandidate(candidate));
 }
@@ -208,6 +214,8 @@ const handleICECandidateEvent = async (event) => {
     if(str.split(" ")[4] === localip)
     {
       const candidate = JSON.stringify(event.candidate).replace(localip, localaddr);
+      const localport = parseInt(str.split(" ")[5]);
+      _lokinet_socket = await lokinet.udpIntercept(localport);
       sendToRemote({
         type: "ice-candidate",
         candidate: JSON.parse(candidate)
@@ -237,7 +245,7 @@ window.addEventListener('DOMContentLoaded', () => {
   establish.addEventListener("click", async () => {
     const remoteaddr = remote.value;
     log("connecting to "+remoteaddr);
-    const client = new WebSocket("ws://"+remoteaddr+":"+PORT+"/");
+    const client = new WebSocket.client();
     client.on("open", async () => {
       log("websocket opened");
       wsc = client;
@@ -251,9 +259,10 @@ window.addEventListener('DOMContentLoaded', () => {
       localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
     });
   });
+  client.connect("ws://"+remoteaddr+":"+PORT+"/", null, null, null, {agent: lokinet.httpAgent()});
   const hangup = document.getElementById("hangup-button");
   hangup.addEventListener("click", hangUpCall);
-  
+
   setTimeout(async () => {
     log("starting up lokinet...");
     await lokinet.start();
@@ -264,8 +273,20 @@ window.addEventListener('DOMContentLoaded', () => {
     elem.value = localaddr;
     log("got localaddr " + localaddr);
     log("got localip "+ localip);
+    const closer = await lokinet.permitInboundTCP(PORT);
+    wss = new Websocket.Server({port: PORT, host: localip});
+    wss.on('close', () => {
+      closer();
+    });
+    wss.on('connection', async (ws) => {
+      wsc = ws;
+      wsc.on('message', async (message) => {
+        const msg = JSON.parse(message);
+        log('WS inbound: ' + message);
+        await handleMsg(msg);
+      });
+    });
+    log("we ready");
     establish.disabled = false;
   }, 0);
-
-  
 })
