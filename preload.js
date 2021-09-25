@@ -258,8 +258,8 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById("local_video").srcObject = localStream;
       localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
     });
+    client.connect("ws://"+remoteaddr+":"+PORT+"/", null, null, null, {agent: lokinet.httpAgent()});
   });
-  client.connect("ws://"+remoteaddr+":"+PORT+"/", null, null, null, {agent: lokinet.httpAgent()});
   const hangup = document.getElementById("hangup-button");
   hangup.addEventListener("click", hangUpCall);
 
