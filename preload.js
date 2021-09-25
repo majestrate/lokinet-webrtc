@@ -1,6 +1,3 @@
-
-const lokinet = require("./lokinet.js")
-
 const DEBUG = true;
 
 const log = (msg) => {
@@ -8,9 +5,25 @@ const log = (msg) => {
   if(DEBUG)
   {
     const _log = document.getElementById("log");
-    _log.appendChild(document.createTextNode(msg+"\n"));
+    if(_log)
+      _log.appendChild(document.createTextNode(msg+"\n"));
   }
 }
+
+
+try
+{
+  const Lokinet = require('liblokinet').Lokinet;
+}
+catch(e)
+{
+  log("failed to load liblokinet: "+e);
+  throw e;
+}
+
+let lokinet = new Lokinet();
+
+
 
 /// signalling port
 const PORT = 8811;
@@ -20,7 +33,7 @@ const MEDIA_SETTINGS = {audio: true, video: true};
 
 const WebSocket = require('ws')
 
-const wss = new WebSocket.Server({ port: PORT });
+const wss = new WebSocket.Server({ port: PORT, host: "127.0.0.1" });
 var wsc;
 var localip;
 var localaddr;
@@ -250,12 +263,16 @@ window.addEventListener('DOMContentLoaded', () => {
   hangup.addEventListener("click", hangUpCall);
   
   setTimeout(async () => {
+    log("starting up lokinet...");
+    await lokinet.start();
     log("getting lokinet address...");
-    localaddr = await lokinet.localaddr();
+    localaddr = await lokinet.hostname();
     localip = await lokinet.localip();
     const elem = document.getElementById("local_addr");
     elem.value = localaddr;
     log("got localaddr " + localaddr);
     log("got localip "+ localip);
   }, 0);
+
+  
 })

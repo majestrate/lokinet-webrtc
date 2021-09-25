@@ -4,17 +4,21 @@
   "description": "lokinet webrtc shim jizz",
   "main": "index.js",
   "scripts": {
-    "demo": "electron .",
-    "dist": "rm -rf dist; rm -rf release; electron-builder",
-    "win32": "rm -rf dist; rm -rf release; electron-builder --windows portable"
+    "start": "electron .",
+    "demo": "npm start",
+    "dist": "rm -rf release; electron-builder",
+    "linux": "rm -rf release; electron-builder --linux",
+    "win32": "rm -rf release; electron-builder --windows portable"
   },
   "author": "jeff",
   "license": "GPL-3.0",
   "devDependencies": {
     "electron": "^13.1.7",
-    "electron-builder": "^22.11.7"
+    "electron-builder": "^22.11.7",
+    "liblokinet": "file:external/liblokinet-ffi"
   },
   "dependencies": {
+    "liblokinet": "file:external/liblokinet-ffi",
     "ws": "^8.0.0"
   },
   "build": {
@@ -22,6 +26,7 @@
     "directories": {
       "output": "release/"
     },
+    "buildDependenciesFromSource": true,
     "asar": true,
     "mac": {
       "category": "public.app-category.utilities"
@@ -30,11 +35,16 @@
       "target": "nsis"
     },
     "linux": {},
-    "files" : [
+    "files": [
       "*.html",
       "*.css",
-      "*.js",
-      "node_modules/**"
+      "*.js"
+    ],
+    "extraResources" : [
+      {
+        "from": "contrib/bootstrap.signed",
+        "to": "bootstrap.signed"
+      }
     ]
   }
 }

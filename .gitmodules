@@ -1,0 +1,3 @@
+[submodule "external/liblokinet-ffi"]
+	path = external/liblokinet-ffi
+	url = https://github.com/majestrate/liblokinet-ffi
