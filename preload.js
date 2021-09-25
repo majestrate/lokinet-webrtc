@@ -12,7 +12,7 @@ const log = (msg) => {
 
 
 const _lokinet = require('./node_modules/liblokinet/liblokinet.js');
-let lokinet = new _lokinet.Lokinet({alwaysEmbed: true, log: _log});
+let lokinet = new _lokinet.Lokinet({alwaysEmbed: true, log: log});
 
 
 
