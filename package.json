@@ -6,19 +6,18 @@
   "scripts": {
     "start": "electron .",
     "demo": "npm start",
-    "dist": "rm -rf release; electron-builder",
-    "linux": "rm -rf release; electron-builder --linux",
-    "win32": "rm -rf release; electron-builder --windows portable"
+    "dist": "rm -rf release && electron-builder",
+    "linux": "rm -rf release && electron-builder --linux",
+    "win32": "rm -rf release && electron-builder --windows portable"
   },
   "author": "jeff",
   "license": "GPL-3.0",
   "devDependencies": {
     "electron": "^13.1.7",
-    "electron-builder": "^22.11.7",
-    "liblokinet": "file:external/liblokinet-ffi"
+    "electron-builder": "^22.11.7"
   },
   "dependencies": {
-    "liblokinet": "file:external/liblokinet-ffi",
+    "liblokinet" : "file:external/liblokinet-ffi",
     "ws": "^8.0.0"
   },
   "build": {

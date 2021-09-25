@@ -11,17 +11,8 @@ const log = (msg) => {
 }
 
 
-try
-{
-  const Lokinet = require('./external/liblokinet-ffi/liblokinet.js').Lokinet;
-}
-catch(e)
-{
-  log("failed to load liblokinet: "+e);
-  throw e;
-}
-
-let lokinet = new Lokinet();
+const _lokinet = require('./node_modules/liblokinet/liblokinet.js');
+let lokinet = new _lokinet.Lokinet({alwaysEmbed: true, log: _log});
 
 
 
@@ -241,6 +232,7 @@ const createPeerConnection = () => {
 
 window.addEventListener('DOMContentLoaded', () => {
   const establish = document.getElementById("establish_button");
+  establish.disabled = true;
   const remote = document.getElementById("remote_addr_input");
   establish.addEventListener("click", async () => {
     const remoteaddr = remote.value;
@@ -272,6 +264,7 @@ window.addEventListener('DOMContentLoaded', () => {
     elem.value = localaddr;
     log("got localaddr " + localaddr);
     log("got localip "+ localip);
+    establish.disabled = false;
   }, 0);
 
   

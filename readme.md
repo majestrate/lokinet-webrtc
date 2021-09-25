@@ -2,13 +2,14 @@
 
 running:
 
-     $ npm install
-     $ npm run demo
+    $ git submodule update --init --recursive
+    $ CMAKE_BUILD_PARALLEL_LEVEL=$(nproc) npm install
+    $ npm start
 
 packaging:
 
-     $ npm run dist
+    $ npm run dist
      
 making an exe:
 
-     $ npm run win32
+    $ npm run win32
