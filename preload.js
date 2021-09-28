@@ -1,3 +1,6 @@
+const WebSocket = require('ws');
+const liblokinet = require('./external/liblokinet-ffi/liblokinet');
+
 const DEBUG = true;
 
 const log = (msg) => {
@@ -8,13 +11,10 @@ const log = (msg) => {
     if(_log)
       _log.appendChild(document.createTextNode(msg+"\n"));
   }
-}
+};
 
-
-const _lokinet = require('./node_modules/liblokinet/liblokinet.js');
-let lokinet = new _lokinet.Lokinet({alwaysEmbed: true, log: log});
-
-
+let lokinet = new liblokinet.Lokinet({alwaysEmbed: true, log: log});
+log(lokinet);
 
 /// signalling port
 const PORT = 8811;
@@ -22,7 +22,6 @@ const PORT = 8811;
 /// media settings for call
 const MEDIA_SETTINGS = {audio: true, video: true};
 
-const WebSocket = require('ws');
 var _lokinet_socket = null;
 var wss;
 var wsc;
@@ -47,15 +46,6 @@ const handleMsg = async (msg, inbound) => {
     await closeVideoCall();
   }
 }
-
-wss.on('connection', async (ws) => {
-  wsc = ws;
-  wsc.on('message', async (message) => {
-    const msg = JSON.parse(message);
-    log('WS inbound: ' + message);
-    await handleMsg(msg, true);
-  });
-});
 
 const sendToRemote = (msg) => {
   if(wsc)
@@ -238,7 +228,7 @@ const createPeerConnection = () => {
   myPeerConnection.onsignalingstatechange = handleSignalingStateChangeEvent;
 }
 
-const initCall = () => {
+const initCall = async () => {
   createPeerConnection();
   const localStream = await navigator.mediaDevices.getUserMedia(MEDIA_SETTINGS);
   document.getElementById("local_video").srcObject = localStream;
@@ -251,6 +241,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const remote = document.getElementById("remote_addr_input");
   establish.addEventListener("click", async () => {
     const remoteaddr = remote.value;
+    if(remoteaddr.length == 0)
+      return;
     log("connecting to "+remoteaddr);
     const client = new WebSocket.client();
     client.on("open", async () => {
@@ -260,7 +252,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const msg = JSON.parse(message);
         handleMsg(msg);
       });
-      initCall();
+      await initCall();
     });
     client.connect("ws://"+remoteaddr+":"+PORT+"/", null, null, null, {agent: lokinet.httpAgent()});
   });
@@ -278,7 +270,7 @@ window.addEventListener('DOMContentLoaded', () => {
     log("got localaddr " + localaddr);
     log("got localip "+ localip);
     const closer = await lokinet.permitInboundTCP(PORT);
-    wss = new Websocket.Server({port: PORT, host: localip});
+    wss = new WebSocket.Server({port: PORT, host: localip});
     wss.on('close', () => {
       closer();
     });
@@ -289,7 +281,7 @@ window.addEventListener('DOMContentLoaded', () => {
         log('WS inbound: ' + message);
         await handleMsg(msg);
       });
-      initCall();
+      await initCall();
     });
     log("we ready");
     establish.disabled = false;
