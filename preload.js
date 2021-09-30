@@ -30,21 +30,28 @@ var localip;
 var localaddr;
 
 const handleMsg = async (msg, inbound) => {
-  if(msg.type === "video-offer")
+  try
   {
-    await handleVideoOfferMsg(msg);
+    if(msg.type === "video-offer")
+    {
+      await handleVideoOfferMsg(msg);
+    }
+    if(msg.type === "video-answer")
+    {
+      await handleVideoAnswerMsg(msg);
+    }
+    if(msg.type === "ice-candidate")
+    {
+      await handleNewICECandidateMsg(msg, inbound);
+    }
+    if(msg.type === "hang-up")
+    {
+      await closeVideoCall();
+    }
   }
-  if(msg.type === "video-answer")
+  catch(e)
   {
-    await handleVideoAnswerMsg(msg);
-  }
-  if(msg.type === "ice-candidate")
-  {
-    await handleNewICECandidateMsg(msg, inbound);
-  }
-  if(msg.type === "hang-up")
-  {
-    await closeVideoCall();
+    log(`failed to handle control message: ${e}`);
   }
 }
 
@@ -281,7 +288,6 @@ window.addEventListener('DOMContentLoaded', () => {
         log('WS inbound: ' + message);
         await handleMsg(msg);
       });
-      await initCall();
     });
     log("we ready");
     establish.disabled = false;
