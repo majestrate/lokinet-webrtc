@@ -1,5 +1,5 @@
 const WebSocket = require('ws');
-const liblokinet = require('./external/liblokinet-ffi/liblokinet');
+const liblokinet = require('liblokinet');
 const path = require('path');
 
 const DEBUG = true;
@@ -14,7 +14,7 @@ const log = (msg) => {
   }
 };
 
-let lokinet = new liblokinet.Lokinet({alwaysEmbed: true, bootstrap: path.join("contrib", "bootstrap.signed")});
+let lokinet = new liblokinet.Lokinet({alwaysEmbed: true, bootstrap: path.join(__dirname, "contrib", "bootstrap.signed")});
 log(lokinet);
 
 /// signalling port
@@ -245,7 +245,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if(remoteaddr.length == 0)
       return;
     log("connecting to "+remoteaddr);
-    const client = new WebSocket.client();
+    const client = new WebSocket.WebSocket("ws://"+remoteaddr+":"+PORT+"/",'ws', {agent: lokinet.httpAgent()});
     client.on("open", async () => {
       log("websocket opened");
       wsc = client;
@@ -255,7 +255,6 @@ window.addEventListener('DOMContentLoaded', () => {
       });
       await initCall();
     });
-    client.connect("ws://"+remoteaddr+":"+PORT+"/", null, null, null, {agent: lokinet.httpAgent()});
   });
   const hangup = document.getElementById("hangup-button");
   hangup.addEventListener("click", hangUpCall);
