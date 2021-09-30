@@ -37,13 +37,9 @@
     "files": [
       "*.html",
       "*.css",
-      "*.js"
-    ],
-    "extraResources" : [
-      {
-        "from": "contrib/bootstrap.signed",
-        "to": "bootstrap.signed"
-      }
+      "*.js",
+      "*.svg",
+      "contrib/bootstrap.signed"
     ]
   }
 }
