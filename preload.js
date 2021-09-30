@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 const liblokinet = require('./external/liblokinet-ffi/liblokinet');
+const path = require('path');
 
 const DEBUG = true;
 
@@ -13,7 +14,7 @@ const log = (msg) => {
   }
 };
 
-let lokinet = new liblokinet.Lokinet({alwaysEmbed: true, log: log});
+let lokinet = new liblokinet.Lokinet({alwaysEmbed: true, bootstrap: path.join("contrib", "bootstrap.signed")});
 log(lokinet);
 
 /// signalling port
