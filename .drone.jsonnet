@@ -20,7 +20,7 @@ local nodejs_builder(build_env, arch='amd64', extra_cmds=[], before_npm=[]) = {
     {
       name: 'build',
       image: image,
-      environment: { SSH_KEY: { from_secret: "SSH_KEY" }, WINEDEBUG: "0", BUILD_TARGET: build_env, CMAKE_BUILD_PARALLEL_LEVEL: '4', WINEPREFIX: '$CCACHE_DIR/wine' },
+      environment: { SSH_KEY: { from_secret: "SSH_KEY" }, WINEDEBUG: "0", BUILD_TARGET: build_env, CMAKE_BUILD_PARALLEL_LEVEL: '4' },
       commands : [
         apt_get_quiet+ ' update',
         apt_get_quiet+ ' upgrade',
