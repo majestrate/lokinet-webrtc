@@ -23,12 +23,12 @@ local nodejs_builder(name, image, npm_target, arch='amd64', extra_cmds=[]) = {
       commands : [
         'npm install',
         'npm run '+npm_target
-      ]
+      ] + extra_cmds
     }
   ]
 }
 
 [
-  nodejs_builder('Linux', docker_base+'nodejs', 'dist'),
-  nodejs_builder('Win32', docker_base+'nodejs', 'win32')
+  nodejs_builder('Linux', docker_base+'nodejs', 'dist', extra_cmds=['./contrib/ci/upload-artifcats.sh']),
+  nodejs_builder('Win32', docker_base+'nodejs', 'win32', extra_cmds=['./contrib/ci/upload-artifcats.sh'])
 ]
