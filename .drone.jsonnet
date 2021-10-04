@@ -6,7 +6,7 @@ local submodules = {
     commands: ['git fetch --tags', 'git submodule update --init --recursive --depth=1']
 };
 
-// local apt_get_quiet = 'apt-get -o=Dpkg::Use-Pty=0 -q';
+local apt_get_quiet = 'apt-get -o=Dpkg::Use-Pty=0 -q';
 
 
 local nodejs_builder(name, image, npm_target, arch='amd64', extra_cmds=[], cc='gcc', cxx='g++', extra_deps='') = {
@@ -21,6 +21,8 @@ local nodejs_builder(name, image, npm_target, arch='amd64', extra_cmds=[], cc='g
       image: image,
       environment: { SSH_KEY: { from_secret: "SSH_KEY" }, WINEDEBUG: "0", CC: cc, CXX: cxx },
       commands : [
+        apt_get_quiet+ ' update',
+        apt_get_quiet+ ' upgrade',
         apt_get_quiet+ ' install libsodium-dev '+extra_deps , // for headers
         'npm install',
         'npm run '+npm_target
