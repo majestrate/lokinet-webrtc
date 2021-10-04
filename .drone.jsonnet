@@ -34,5 +34,5 @@ local nodejs_builder(name, image, build_env, arch='amd64', extra_cmds=[], extra_
 
 [
   nodejs_builder('Linux', docker_base+'nodejs', 'linux', extra_cmds=['./contrib/ci/upload-artifcats.sh']),
-  nodejs_builder('Win32', docker_base+'nodejs', 'win32', extra_cmds=['./contrib/ci/upload-artifcats.sh'], extra_deps='mingw-w64', build_env='win32', before_npm=['update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix','update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix'])
+  nodejs_builder('Win32', docker_base+'nodejs', 'win32', extra_cmds=['./contrib/ci/upload-artifcats.sh'], extra_deps='mingw-w64', before_npm=['update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix','update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix'])
 ]
