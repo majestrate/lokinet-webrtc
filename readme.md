@@ -13,3 +13,11 @@ packaging:
 making an exe:
 
     $ npm run win32
+
+
+## development
+
+
+format code:
+
+    $ npm run format
