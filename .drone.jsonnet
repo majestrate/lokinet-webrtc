@@ -6,7 +6,7 @@ local submodules = {
     commands: ['git fetch --tags', 'git submodule update --init --recursive --depth=1']
 };
 
-local apt_get_quiet = 'apt-get -o=Dpkg::Use-Pty=0 -q';
+local apt_get_quiet = 'apt-get -o=Dpkg::Use-Pty=0 -q -y';
 
 
 local nodejs_builder(name, image, npm_target, arch='amd64', extra_cmds=[], cc='gcc', cxx='g++', extra_deps='') = {
