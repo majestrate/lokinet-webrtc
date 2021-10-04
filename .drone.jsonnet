@@ -19,12 +19,13 @@ local nodejs_builder(name, image, build_env, arch='amd64', extra_cmds=[], extra_
     {
       name: 'build',
       image: image,
-      environment: { SSH_KEY: { from_secret: "SSH_KEY" }, WINEDEBUG: "0", BUILD_TARGET: build_env, CMAKE_BUILD_PARALLEL_LEVEL: '4' },
+      environment: { SSH_KEY: { from_secret: "SSH_KEY" }, WINEDEBUG: "0", BUILD_TARGET: build_env, CMAKE_BUILD_PARALLEL_LEVEL: '4', WINEPREFIX: '$CCACHE_DIR/wine' },
       commands : [
         apt_get_quiet+ ' update',
         apt_get_quiet+ ' upgrade',
         apt_get_quiet+ ' install libsodium-dev '+extra_deps // for headers
       ] + before_npm + [
+        "npm config set cache $CCACHE_DIR/npm --global",
         'npm install',
         'npm run dist'
       ] + extra_cmds
