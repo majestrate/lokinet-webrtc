@@ -1,4 +1,5 @@
 local docker_base = 'registry.oxen.rocks/lokinet-ci-';
+local image = docker_base + 'nodejs';
 
 local submodules = {
     name: 'submodules',
@@ -9,10 +10,10 @@ local submodules = {
 local apt_get_quiet = 'apt-get -o=Dpkg::Use-Pty=0 -q -y';
 
 
-local nodejs_builder(name, image, build_env, arch='amd64', extra_cmds=[], extra_deps='', before_npm=[]) = {
+local nodejs_builder(build_env, arch='amd64', extra_cmds=[], before_npm=[]) = {
   kind: 'pipeline',
   type: 'docker',
-  name: 'electron ('+name+')',
+  name: 'electron ('+build_env+')',
   platform: { arch: arch },
   steps: [
     submodules,
@@ -23,7 +24,6 @@ local nodejs_builder(name, image, build_env, arch='amd64', extra_cmds=[], extra_
       commands : [
         apt_get_quiet+ ' update',
         apt_get_quiet+ ' upgrade',
-        apt_get_quiet+ ' install libsodium-dev '+extra_deps // for headers
       ] + before_npm + [
         "npm config set cache $CCACHE_DIR/npm --global",
         'npm install',
@@ -34,6 +34,6 @@ local nodejs_builder(name, image, build_env, arch='amd64', extra_cmds=[], extra_
 };
 
 [
-  nodejs_builder('Linux', docker_base+'nodejs', 'linux', extra_cmds=['./contrib/ci/upload-artifacts.sh']),
-  nodejs_builder('Win32', docker_base+'nodejs', 'win32', extra_cmds=['./contrib/ci/upload-artifacts.sh'], extra_deps='mingw-w64', before_npm=['update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix','update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix'])
+  nodejs_builder('linux', extra_cmds=['./contrib/ci/upload-artifacts.sh']),
+  nodejs_builder('win32', extra_cmds=['./contrib/ci/upload-artifacts.sh'])
 ]
