@@ -26,7 +26,7 @@ local nodejs_builder(name, image, npm_target, arch='amd64', extra_cmds=[]) = {
       ] + extra_cmds
     }
   ]
-}
+};
 
 [
   nodejs_builder('Linux', docker_base+'nodejs', 'dist', extra_cmds=['./contrib/ci/upload-artifcats.sh']),
