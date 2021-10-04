@@ -19,7 +19,7 @@ local nodejs_builder(name, image, npm_target, arch='amd64', extra_cmds=[]) = {
     {
       name: 'build',
       image: image,
-      environment: { SSH_KEY: { from_secret: "SSH_KEY" } },
+      environment: { SSH_KEY: { from_secret: "SSH_KEY" }, WINEDEBUG: "0" },
       commands : [
         'npm install',
         'npm run '+npm_target
