@@ -8,16 +8,18 @@
     "demo": "npm start",
     "dist": "rm -rf release && electron-builder",
     "linux": "rm -rf release && electron-builder --linux",
-    "win32": "rm -rf release && electron-builder --windows portable"
+    "win32": "rm -rf release && electron-builder --windows portable",
+    "format": "for f in *.js ; do js-beautify -r -f $f ; done"
   },
   "author": "jeff",
   "license": "GPL-3.0",
   "devDependencies": {
     "electron": "^13.1.7",
-    "electron-builder": "^22.11.7"
+    "electron-builder": "^22.11.7",
+    "js-beautify": "^1.14.0"
   },
   "dependencies": {
-    "liblokinet" : "file:external/liblokinet-ffi",
+    "liblokinet": "file:external/liblokinet-ffi",
     "ws": "^8.0.0"
   },
   "build": {
