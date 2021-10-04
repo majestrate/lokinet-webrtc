@@ -26,7 +26,7 @@ local nodejs_builder(name, image, build_env, arch='amd64', extra_cmds=[], extra_
         apt_get_quiet+ ' install libsodium-dev '+extra_deps // for headers
       ] + before_npm + [
         'npm install',
-        'npm run '+build_env
+        'npm run dist'
       ] + extra_cmds
     }
   ]

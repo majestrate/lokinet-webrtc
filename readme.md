@@ -6,13 +6,13 @@ running:
     $ CMAKE_BUILD_PARALLEL_LEVEL=$(nproc) npm install
     $ npm start
 
-packaging:
+making an appimage:
 
-    $ npm run dist
+    $ npm run dist:linux
      
 making an exe:
 
-    $ npm run win32
+    $ npm run dist:win32
 
 
 ## development

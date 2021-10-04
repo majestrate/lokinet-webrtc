@@ -1,14 +1,15 @@
 {
   "name": "lokinet-webrtc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "lokinet webrtc shim jizz",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
     "demo": "npm start",
-    "dist": "rm -rf release && electron-builder",
-    "linux": "rm -rf release && electron-builder --linux",
-    "win32": "rm -rf release && electron-builder --windows portable",
+    "dist:linux": "rm -rf release && electron-builder --linux appimage -p never",
+    "dist:win32": "rm -rf release && electron-builder --windows portable -p never",
+    "dist:" "rm -rf release && electron-builder -p never",
+    "dist": "npm run dist:$BUILD_TARGET",
     "format": "for f in *.js ; do js-beautify -r -f $f ; done"
   },
   "author": "jeff",
