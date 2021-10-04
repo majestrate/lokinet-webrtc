@@ -13,7 +13,7 @@ local nodejs_builder(name, image, npm_target, arch='amd64', extra_cmds=[]) = {
   kind: 'pipeline',
   type: 'docker',
   name: 'electron ('+name+')',
-  platform: { arch: ardh },
+  platform: { arch: arch },
   steps: [
     submodules,
     {
