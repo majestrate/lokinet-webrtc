@@ -1,5 +1,7 @@
 # lokinet webrtc demo
 
+CI builds [here](https://oxen.rocks/majestrate/lokinet-webrtc/master/?C=M&O=D)
+
 running:
 
     $ git submodule update --init --recursive
