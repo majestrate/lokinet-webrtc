@@ -2,6 +2,8 @@
 
 CI builds [here](https://oxen.rocks/majestrate/lokinet-webrtc/master/?C=M&O=D)
 
+## development
+
 running:
 
     $ git submodule update --init --recursive
@@ -15,10 +17,6 @@ making an appimage:
 making an exe:
 
     $ npm run dist:win32
-
-
-## development
-
 
 format code:
 
