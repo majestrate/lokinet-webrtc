@@ -6,11 +6,12 @@
   "scripts": {
     "start": "electron .",
     "demo": "npm start",
-    "dist:linux": "rm -rf release && electron-builder --linux appimage -p never",
-    "dist:win32": "rm -rf release && electron-builder --windows portable -p never",
-    "dist:": "rm -rf release && electron-builder -p never",
-    "dist": "npm run dist:$BUILD_TARGET",
-    "format": "for f in *.js ; do js-beautify -r -f $f ; done"
+    "dist:linux": "electron-builder --linux appimage -p never",
+    "dist:win32": "electron-builder --windows portable -p never",
+    "dist:": "electron-builder -p never",
+    "dist": "npm run make-icon-jizz && npm run dist:$BUILD_TARGET",
+    "format": "for f in *.js ; do js-beautify -r -f $f ; done",
+    "make-icon-jizz": "mkdir -p build && convert lokinet.svg -scale 512x512 build/icon.png"
   },
   "author": "jeff",
   "license": "GPL-3.0",
@@ -25,9 +26,6 @@
   },
   "build": {
     "appId": "com.electron.lokinet.webrtc",
-    "directories": {
-      "output": "release/"
-    },
     "buildDependenciesFromSource": true,
     "asar": true,
     "mac": {

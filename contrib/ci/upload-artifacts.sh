@@ -34,13 +34,13 @@ else
 fi
 
 mkdir -v "$base"
-if [ -e release/*.exe ]; then
-    cp -av release/*.exe "$base"
+if [ -e build/*.exe ]; then
+    cp -av build/*.exe "$base"
     # zipit up yo
     archive="$base.zip"
     zip -r "$archive" "$base"
-elif [ -e release/*.AppImage ]; then
-    cp -av release/*.AppImage "$base"
+elif [ -e build/*.AppImage ]; then
+    cp -av build/*.AppImage "$base"
     # tar dat shiz up yo
     archive="$base.tar.xz"
     tar cJvf "$archive" "$base"
