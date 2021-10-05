@@ -258,7 +258,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(async () => {
         log("starting up lokinet...")
-        await lokinet.start()
+        try {
+            await lokinet.start()
+        } catch (ex) {
+            log(`failed to start up lokinet: ${ex}`)
+            return
+        }
         log("getting lokinet address...")
         localaddr = await lokinet.hostname()
         localip = await lokinet.localip()
