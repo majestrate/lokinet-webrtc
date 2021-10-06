@@ -199,7 +199,7 @@ const handleICECandidateEvent = async (event) => {
         const str = event.candidate.candidate
         const ip = str.split(" ")[4]
         const ownsIP = await lokinet.ownsAddress(ip)
-        if (owns) {
+        if (ownsIP) {
             const localport = parseInt(str.split(" ")[5])
             const candidate = JSON.stringify(event.candidate).replace(` ${ip} `, ` ${localaddr} `)
             sendToRemote({
