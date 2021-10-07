@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <link rel="stylesheet" href="index.css" />
     <title>lokinet webrtc demo</title>
-  </head>
-  <body>
-    <div class="flexChild">
-      <label for="local_addr">local address</label>
-      <input disabled=true id="local_addr" />
+</head>
+
+<body>
+    <div id="root">
+        <div class="videoPane">
+            <div class="flexChild" id="camera-container">
+                <div class="camera-box">
+                    <video id="received_video" autoplay></video>
+                    <video id="local_video" autoplay muted></video>
+                </div>
+            </div>
+        </div>
+        <div class="infoPane">
+            <div class="infoInput">
+                <label for="local_addr">local address</label>
+                <input disabled=true id="local_addr" />
+            </div>
+            <div class="infoInput">
+                <label for="remote_addr_input">remote address:</label>
+                <input id="remote_addr_input" />
+            </div>
+            <input type="button" id="action-button" value="try connecting" />
+            <pre id="log"></pre>
+        </div>
     </div>
-    <div class="flexChild">
-      <label for="remote_addr_input">remote address:</label>
-      <input id="remote_addr_input"/>
-    </div>
-    <input type="button" id="establish_button" value="try connecting" />
-    <div class="flexChild" id="camera-container">
-      <div class="camera-box">
-        <video id="received_video" autoplay></video>
-        <video id="local_video" autoplay muted></video>
-        <button id="hangup-button" disabled>
-          Hang Up
-        </button>
-      </div>
-    </div>
-    <pre id="log"></pre>
-  </body>
+</body>
+
 </html>

@@ -10,14 +10,14 @@
     "dist:win32": "electron-builder --windows portable -p never",
     "dist:": "electron-builder -p never",
     "dist": "npm run make-icon-jizz && npm run dist:$BUILD_TARGET",
-    "format": "for f in *.js ; do js-beautify -r -f $f ; done",
+    "format": "for f in *.{js,css,html} ; do js-beautify -r -f $f ; done",
     "make-icon-jizz": "mkdir -p build && convert lokinet.svg -scale 512x512 build/icon.png"
   },
   "author": "jeff",
   "license": "GPL-3.0",
   "devDependencies": {
     "electron": "^13.1.7",
-    "electron-builder": "^22.11.7",
+    "electron-builder": "^22.10.5",
     "js-beautify": "^1.14.0"
   },
   "dependencies": {

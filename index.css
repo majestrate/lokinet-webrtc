@@ -1,19 +1,53 @@
 /** index.css */
 
-html, input {
+html,
+input {
     background: #333;
     color: #7f0;
+    height: 90%;
+    width: 90%;
 }
-html {
-    background-image: url(lokinet.svg);
-    background-repeat: no-repeat;
-    background-blend-mode: overlay;
-    background-size: 75%;
-}
-.flexChild {
+
+div {
     flex: 1;
 }
 
 #log {
     overflow: overlay;
+}
+
+#root {
+    width: 100%;
+    hieght: 100%;
+}
+
+
+.infoPane {
+    position: fixed;
+    bottom: 0;
+    width: 90%;
+}
+
+.videoPane {
+    height: 80%;
+    background-image: url(lokinet.svg);
+    background-repeat: no-repeat;
+    background-size: 75%;
+    opacity: 0.5;
+}
+
+#local_addr,
+#remote_addr_input {
+    width: 50%;
+}
+
+#establish_button,
+#hangup-button {
+    width: 300px;
+    heigth: 20px;
+}
+
+.infoInput {
+    flex-direction: column;
+
 }

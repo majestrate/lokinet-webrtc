@@ -18,6 +18,11 @@ const lokinet = new liblokinet.Lokinet({
     log: log
 })
 
+
+const CALL_TEXT = "call"
+const HANGUP_TEXT = "hangup"
+const PENDING_CALL_TEXT = "dialing..."
+
 /// signalling port
 const PORT = 8811
 
@@ -101,7 +106,7 @@ const closeVideoCall = async () => {
     localVideo.removeAttribute("src")
     remoteVideo.removeAttribute("srcObject")
 
-    document.getElementById("hangup-button").disabled = true
+    document.getElementById("action-button").value = CALL_TEXT;
     wsc.close()
     wsc = null
 }
@@ -134,7 +139,7 @@ const handleICEGatheringStateChangeEvent = async (event) => {}
 
 const handleTrackEvent = async (event) => {
     document.getElementById("received_video").srcObject = event.streams[0]
-    document.getElementById("hangup-button").disabled = false
+    document.getElementById("action-button").value = HANGUP_TEXT;
 }
 
 const handleVideoAnswerMsg = async (msg) => {
@@ -163,7 +168,7 @@ const handleVideoOfferMsg = async (msg) => {
         })
     } catch (err) {
         log("error recving call: " + err)
-        document.getElementById("hangup-button").disabled = false
+        await hangUpCall()
     }
 }
 
@@ -232,17 +237,23 @@ const initCall = async () => {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    const establish = document.getElementById("establish_button")
-    establish.disabled = true
+    const actionButton = document.getElementById("action-button")
+    actionButton.disabled = true
     const remote = document.getElementById("remote_addr_input")
-    establish.addEventListener("click", async () => {
-        const remoteaddr = remote.value
+    let conn = null
+    const tryConnect = async () => {
+        const remoteaddr = remote.value.trim()
         if (remoteaddr.length == 0)
             return
+        if (!remoteaddr.endsWith(".loki")) {
+            log("remote address is not valid")
+            return
+        }
         log("connecting to " + remoteaddr)
         const client = new WebSocket.WebSocket("ws://" + remoteaddr + ":" + PORT + "/", "ws", {
             agent: lokinet.httpAgent()
         })
+        conn = client;
         client.on("open", async () => {
             log("websocket opened")
             wsc = client
@@ -252,9 +263,27 @@ window.addEventListener("DOMContentLoaded", () => {
             })
             await initCall()
         })
+    }
+
+    const cancelCall = async () => {
+        if (conn) {
+            conn.close()
+            conn = null
+        }
+        actionButton.value = CALL_TEXT
+    }
+
+    actionButton.addEventListener("click", async () => {
+        if (actionButton.value === CALL_TEXT) {
+            await tryConnect();
+        } else if (actionButton.value === PENDING_CALL_TEXT) {
+            await cancelCall();
+        } else if (actionButton.value === HANGUP_TEXT) {
+            await hangUpCall();
+        } else {
+            log(`invalid state: ${actionButton.value}`)
+        }
     })
-    const hangup = document.getElementById("hangup-button")
-    hangup.addEventListener("click", hangUpCall)
 
     setTimeout(async () => {
         log("starting up lokinet...")
@@ -288,6 +317,6 @@ window.addEventListener("DOMContentLoaded", () => {
             })
         })
         log("we ready")
-        establish.disabled = false
+        actionButton.disabled = false
     }, 0)
 })
